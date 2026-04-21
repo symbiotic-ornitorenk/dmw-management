@@ -1,0 +1,33 @@
+### Backend (Python/Node.js) ###
+# Sanal ortamlar
+venv/
+.venv/
+env/
+__pycache__/
+*.pyc
+
+# Hassas veriler (API anahtarları vb.)
+.env
+
+# Derlenmiş dosyalar ve executable'lar
+*.exe
+dist/
+build/
+
+### Frontend (JavaScript/CSS) ###
+# Bağımlılıklar (Kesinlikle yüklenmemeli!)
+node_modules/
+
+# Üretim çıktıları
+/frontend/dist/
+/frontend/build/
+
+# Log dosyaları
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+### Diğer ###
+.DS_Store
+.vscode/
+.idea/
