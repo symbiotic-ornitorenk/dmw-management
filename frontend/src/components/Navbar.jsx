@@ -15,7 +15,7 @@ const Navbar = () => {
     return (
         <header className="h-16 bg-gray-800 border-b border-gray-700 flex items-center justify-between px-8 shadow-md">
             <div className="text-gray-400">
-                Hoş geldin, <span className="text-white font-semibold">{user?.username || 'Kullanıcı'}</span>
+                Hoş geldin, <span className="text-white font-semibold">{user?.name || 'Kullanıcı'}</span>
             </div>
 
             <div className="flex items-center gap-4">
