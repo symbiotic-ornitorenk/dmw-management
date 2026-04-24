@@ -18,9 +18,9 @@ class Digimon(models.Model):
     digi_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
 
     ELEMENT_CHOICES = [
-        ('Fire', 'Fire'), ('Water', 'Water'), ('Ice', 'Ice'),
-        ('Earth', 'Earth'), ('Wind', 'Wind'), ('Thunder', 'Thunder'),
-        ('Steel', 'Steel'), ('Dark', 'Dark'), ('Light', 'Light'),
+        ('Fire', 'Fire'), ('Light', 'Light'), ('Steel', 'Steel'),('Wind', 'Wind'),
+        ('Ice', 'Ice'), ('Neutral', 'Neutral'), ('Thunder', 'Thunder'),('Wood', 'Wood'),
+        ('Land', 'Land'), ('Dark', 'Dark'), ('Water', 'Water'),
     ]
     element = models.CharField(max_length=20, choices=ELEMENT_CHOICES)
 
