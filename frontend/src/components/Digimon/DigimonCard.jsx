@@ -3,7 +3,7 @@ import { ORB_COLORS } from "./Constants.js"; // Renkleri ortak bir dosyaya alabi
 const DigimonCard = ({ digimon, onEdit, onDelete, onNavigate }) => {
     return (
         <div
-            onClick={() => onNavigate(`/digimon/${digimon.id}`)}
+            onClick={() => onNavigate(`/digimons/${digimon.id}`)}
             className="group relative bg-[#161b22]/40 hover:bg-[#1c2128] rounded-[2rem] border border-white/5 hover:border-blue-500/50 transition-all duration-500 shadow-xl flex flex-col h-[280px] overflow-hidden cursor-pointer"
         >
             <div className="absolute top-4 left-4 z-10 bg-black/60 backdrop-blur-md text-[9px] px-3 py-1 rounded-full font-black text-blue-400 border border-white/5 uppercase">

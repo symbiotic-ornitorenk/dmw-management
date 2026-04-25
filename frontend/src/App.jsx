@@ -1,12 +1,13 @@
 import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
 import {useSelector} from 'react-redux';
 import Sidebar from "./components/Sidebar.jsx";
-import Navbar from "./components/NavBar.jsx";
+import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
 import Login from './pages/Accounts/Login.jsx';
 import Register from './pages/Accounts/Register.jsx';
 import Dashboard from "./pages/Dashboard.jsx";
 import DigimonList from "./pages/Digimon/DigimonList.jsx";
+import DigimonDetail from "./pages/Digimon/DigimonDetail.jsx";
 
 
 // Yetkisiz erişimi engelleyen sarmalayıcı bileşen
@@ -48,6 +49,7 @@ function App() {
                                         <Routes>
                                             <Route path="/dashboard" element={<Dashboard/>}/>
                                             <Route path="/digimons" element={<DigimonList/>}/>
+                                            <Route path="/digimons/:id" element={<DigimonDetail/>}/>
                                             <Route path="/" element={<Navigate to="/dashboard" replace/>}/>
                                         </Routes>
                                     </main>

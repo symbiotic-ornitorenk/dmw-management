@@ -27,10 +27,32 @@ class DigimonSerializer(serializers.ModelSerializer):
     stats = DigimonStatsSerializer(required=False)
     owner_username = serializers.ReadOnlyField(source='owner.username')
 
+    # 1. Alan Tanımlamaları
+    evolves_from_name = serializers.SerializerMethodField()
+    evolves_to_name = serializers.SerializerMethodField()
+    evolves_from_id = serializers.SerializerMethodField()
+    evolves_to_id = serializers.SerializerMethodField()
+
     class Meta:
         model = Digimon
         fields = '__all__'
         read_only_fields = ['owner']
+
+    def get_evolves_from_name(self, obj):
+        evo = DigimonEvolution.objects.filter(to_digimon=obj).first()
+        return evo.from_digimon.name if evo else None
+
+    def get_evolves_to_name(self, obj):
+        evo = DigimonEvolution.objects.filter(from_digimon=obj).first()
+        return evo.to_digimon.name if evo else None
+
+    def get_evolves_from_id(self, obj):
+        evo = DigimonEvolution.objects.filter(to_digimon=obj).first()
+        return evo.from_digimon.id if evo else ""
+
+    def get_evolves_to_id(self, obj):
+        evo = DigimonEvolution.objects.filter(from_digimon=obj).first()
+        return evo.to_digimon.id if evo else ""
 
     def create(self, validated_data):
         # 1. Stats verisini initial_data'dan (gelen ham veri) çekiyoruz
@@ -64,3 +86,43 @@ class DigimonSerializer(serializers.ModelSerializer):
             DigimonEvolution.objects.create(from_digimon=digimon, to_digimon_id=to_id)
 
         return digimon
+
+    def update(self, instance, validated_data):
+        # 1. Ana Digimon Bilgilerini Güncelle
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        # 2. Stats Güncelleme
+        stats_raw = self.initial_data.get('stats')
+        if stats_raw:
+            if isinstance(stats_raw, str):
+                stats_data = json.loads(stats_raw)
+            else:
+                stats_data = stats_raw
+
+            # KRİTİK DÜZELTME: stats içindeki digimon ID'sini veya id alanını siliyoruz
+            # Çünkü setattr bunları doğrudan modele yazmaya çalışınca ValueError verir.
+            stats_data.pop('digimon', None)
+            stats_data.pop('id', None)
+
+            stats_obj, created = DigimonStats.objects.get_or_create(digimon=instance)
+            for attr, value in stats_data.items():
+                setattr(stats_obj, attr, value)
+            stats_obj.save()
+
+        # 3. Evrimleri Güncelleme
+        from_id = self.initial_data.get('evolves_from_id')
+        to_id = self.initial_data.get('evolves_to_id')
+
+        if from_id is not None:
+            DigimonEvolution.objects.filter(to_digimon=instance).delete()
+            if from_id != "" and from_id != "None":
+                DigimonEvolution.objects.create(from_digimon_id=from_id, to_digimon=instance)
+
+        if to_id is not None:
+            DigimonEvolution.objects.filter(from_digimon=instance).delete()
+            if to_id != "" and to_id != "None":
+                DigimonEvolution.objects.create(from_digimon=instance, to_digimon_id=to_id)
+
+        return instance

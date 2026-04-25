@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import api from '../../services/api';
 import DigimonCard from "../../components/Digimon/DigimonCard.jsx";
 import DigimonFormModal from "../../components/Digimon/DigimonFormModal.jsx";
@@ -66,24 +66,17 @@ const DigimonList = () => {
     };
 
     const handleEdit = (e, digimon) => {
-        e.stopPropagation();
+        if (e && e.stopPropagation) e.stopPropagation();
+
         setEditingId(digimon.id);
 
-        const currentStats = typeof digimon.stats === 'string'
-            ? JSON.parse(digimon.stats)
-            : digimon.stats;
-
         setFormData({
-            name: digimon.name,
-            digi_type: digimon.digi_type,
-            element: digimon.element,
-            stage: digimon.stage,
-            size: digimon.size || 140.0,
-            hatch_level: digimon.hatch_level || 5,
-            evolves_from_id: digimon.evolves_from_id || '',
-            evolves_to_id: digimon.evolves_to_id || '',
-            image: null,
-            stats: currentStats || initialFormState.stats
+            ...digimon,
+            // Serializer'dan gelen verileri modalın beklediği state'e aktar
+            evolves_from_id: digimon.evolves_from_id || "",
+            evolves_to_id: digimon.evolves_to_id || "",
+            stats: typeof digimon.stats === 'string' ? JSON.parse(digimon.stats) : (digimon.stats || {}),
+            image: null
         });
         setPreviewImage(digimon.image);
         setIsModalOpen(true);
@@ -145,17 +138,20 @@ const DigimonList = () => {
     return (
         <div className="max-w-[1600px] mx-auto animate-in fade-in duration-500">
             {/* Header Kısmı */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-10 border-b border-white/5 pb-8">
+            <div
+                className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-10 border-b border-white/5 pb-8">
                 <h1 className="text-4xl font-black text-white uppercase italic flex items-center gap-3">
                     <span className="w-2 h-10 bg-blue-600 rounded-full"></span> Digimonlar
                 </h1>
-                <button onClick={() => setIsModalOpen(true)} className="group bg-blue-600 hover:bg-blue-500 text-white text-xs font-black py-4 px-8 rounded-2xl uppercase tracking-widest italic transition-all shadow-lg shadow-blue-900/20">
+                <button onClick={() => setIsModalOpen(true)}
+                        className="group bg-blue-600 hover:bg-blue-500 text-white text-xs font-black py-4 px-8 rounded-2xl uppercase tracking-widest italic transition-all shadow-lg shadow-blue-900/20">
                     <span className="text-xl group-hover:rotate-90 transition-transform">+</span> Yeni Kayıt Oluştur
                 </button>
             </div>
 
             {/* Liste Kısmı */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-7 gap-6">
+            <div
+                className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-7 gap-6">
                 {digimons.filter(d => d.stage === 'Rookie').map((digimon) => (
                     <DigimonCard
                         key={digimon.id}
